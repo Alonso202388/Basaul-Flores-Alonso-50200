@@ -16,6 +16,8 @@
         <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+        <!-- L-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
     </head>
     <body id="page-top">
         <!-- Navigation-->
@@ -27,8 +29,9 @@
                     <a class="navbar-brand" href="{% url 'cursos' %}">Cursos</a>
                     <a class="navbar-brand" href="{% url 'profesores' %}">Profesores</a>
                     <a class="navbar-brand" href="{% url 'estudiantes' %}">Estudiantes</a>
-                    <a class="navbar-brand" href="{% url 'entregables' %}">Entregables</a>    
-                    
+                    <a class="navbar-brand" href="{% url 'entregables' %}">Entregables</a> 
+                    <a class="navbar-brand" href="{% url 'buscar' %}"><i class="fas fa-search"></i></a>
+                                        
                     <p style="color:green">Hola {{user.username}}!</p>
                     <div class="text-center">
                         <a  href="{% url 'agregar_avatar' %}" ><img src="{{ request.session.avatar }}" height="40px" weight="40px"/></a>
@@ -44,8 +47,8 @@
         <!-- Masthead-->
         <header class="masthead bg-primary text-white text-center">
             <div class="container d-flex align-items-center flex-column">
-                <!-- Masthead Avatar Image-->
-                <img class="masthead-avatar mb-5" src="assets/img/avataaars.svg" alt="..." />
+                <!-- Masthead Avatar Image-->            
+                <i class="fas fa-user-graduate fa-6x masthead-avatar mb-5"></i>
                 <!-- Masthead Heading-->
                 <h1 class="masthead-heading text-uppercase mb-0">A.B. GestionEstudiantes</h1>
                 <!-- Icon Divider-->
@@ -92,8 +95,7 @@
                         <h4 class="text-uppercase mb-4">Sobre el Autor</h4>
                         <p class="lead mb-0">
                             Alonso Basaul F.
-                            <a href="{% url 'autor' %}">Clic Aquí</a>
-                            
+                            <a href="{% url 'autor' %}">Clic Aquí</a>                            
                         </p>
                     </div>
                 </div>
