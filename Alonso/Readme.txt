@@ -28,7 +28,7 @@ Usuario: Modelo integrado de Django para la gestión de usuarios y autenticació
 El acceso al panel de administración de Django se realiza mediante el usuario administrador predeterminado. A continuación se proporcionan las credenciales de inicio de sesión:
 
 Usuario: 50200
-Contraseña: [50200]
+Contraseña: 50200
 
 #Instalación y Ejecución
 Para ejecutar el proyecto localmente, sigue estos pasos:
