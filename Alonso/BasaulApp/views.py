@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 
@@ -15,6 +15,7 @@ from django.contrib.auth            import authenticate, login
 from django.contrib.auth.mixins     import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 
+
 # Create your views here.
 def home(request):
     return render(request, "aplicacion/home.html")
@@ -28,16 +29,7 @@ def cursos(request):
     contexto = {'cursos': Curso.objects.all()}
     return render(request, "aplicacion/cursos.html", contexto)
 
-
-@login_required
-def estudiantes(request):
-    return render(request, "aplicacion/estudiantes.html")
-
-@login_required
-def entregables(request):
-    return render(request, "aplicacion/entregables.html")
-
-@login_required
+# Create your views here.
 def cursoForm(request):
     if request.method == "POST":
         miForm = CursoForm(request.POST)
@@ -53,7 +45,7 @@ def cursoForm(request):
 
     return render(request, "aplicacion/cursoForm.html", {"form": miForm })
 
-  
+# ________________________________________________________ Buscar  
 @login_required
 def buscar(request):
     return render(request, "aplicacion/buscar.html")
@@ -119,26 +111,7 @@ def deleteProfesor(request, id_profesor):
     profesor.delete()
     return redirect(reverse_lazy('profesores'))
 
-#________________________________________________________ Estudiantes
-
-#class EstudianteList(LoginRequiredMixin, ListView):
-    model = Estudiante
-
-#class EstudianteCreate(LoginRequiredMixin, CreateView):
-    model = Estudiante
-    fields = ['nombre', 'apellido', 'email']
-    success_url = reverse_lazy('estudiantes')
-
-#class EstudianteUpdate(LoginRequiredMixin, UpdateView):
-    model = Estudiante
-    fields = ['nombre', 'apellido', 'email']
-    success_url = reverse_lazy('estudiantes')
-
-#class EstudianteDelete(LoginRequiredMixin, DeleteView):
-    model = Estudiante
-    success_url = reverse_lazy('estudiantes')
-
-#________________________________________________________ Login, Logout, Registracion
+# ________________________________________________________ Login, Logout, Registracion
 
 def login_request(request):
     if request.method == "POST":
@@ -199,6 +172,8 @@ def editarPerfil(request):
 
     return render(request, "aplicacion/editarPerfil.html", {"form": form }) 
 
+
+#________________________________________________________ Avatar
 @login_required
 def agregarAvatar(request):
     if request.method == "POST":
@@ -226,27 +201,69 @@ def agregarAvatar(request):
     return render(request, "aplicacion/agregarAvatar.html", {"form": form })  
 
 
-#entregable
+#________________________________________________________ Entregable
+@login_required
+def entregables(request):
+    context = {
+        'estudiantes': Estudiante.objects.all(),
+        'entregables': Entregable.objects.all()  
+    }
+    return render(request, "aplicacion/entregables.html", context)
 
-def entregable_formulario(request):
+    #context = {'estudiantes': Estudiante.objects.all()}
+    #return render(request, "aplicacion/entregables.html", context)
+    
+#@login_required
+#def entregables(request):
+    #return render(request, "aplicacion/entregables.html")
+#@login_required
+#def entregables(request):
+    #context = {'estudiantes': Estudiante.objects.all()}
+    #return render(request, "aplicacion/entregables.html", context)
+@login_required
+def entregableCrear(request):
     if request.method == "POST":
         form = EntregableFormulario(request.POST)
         if form.is_valid():
-            # Crear una instancia de Profesor con los datos del formulario
+            # Crear una instancia de Entregable con los datos del formulario
             entregable = Entregable(
                 nombre=form.cleaned_data['nombre'],
-                apellido=form.cleaned_data['apellido'],
-                fechaDeEntrega = form.cleaned_data['fechaDeEntrega'],
-                entregado=form.cleaned_data['entregado']   
+                fechaDeEntrega=form.cleaned_data['fechaDeEntrega'],
+                entregado=form.cleaned_data['entregado'],
+                estudiante_id=form.cleaned_data['estudiante']  
             )
             entregable.save()
-            return render(request, "entregable_formulario.html", {"mensaje": "Entregable creado con éxito"})
+            return render(request, "entregables.html", {"mensaje": "Entregable creado con éxito"})
     else:
         form = EntregableFormulario()
     
-    return render(request, "entregable_formulario.html", {"form": form})
+    return render(request, "aplicacion/entregable_formulario.html", {"form": form})
 
-#________________________________________________________ Profesores
+
+@login_required
+def entregableActualizar(request, id_entregable):
+    entregable = Entregable.objects.get(id=id_entregable)
+    if request.method == "POST":
+        miForm = EntregableFormulario(request.POST, instance=entregable)
+        if miForm.is_valid():
+            miForm.save()
+            return redirect(reverse_lazy('entregables'))  # Redirigir a la lista de entregables
+    else:
+        miForm = EntregableFormulario(instance=entregable)
+    return render(request, "aplicacion/entregable_formulario.html", {'form': miForm})
+
+@login_required
+def entregableBorrar(request, id_entregable):
+    entregable = Entregable.objects.get(id=id_entregable)
+    entregable.delete()
+    return redirect(reverse_lazy('entregables'))
+
+
+
+#________________________________________________________ Estudiantes
+#@login_required
+#def estudiantes(request):
+#    return render(request, "aplicacion/estudiantes.html")
 @login_required
 def estudiantes(request):
     contexto = {'estudiantes': Estudiante.objects.all()}

@@ -3,28 +3,75 @@
 {% block titulo %}
     <h1 class="mb-5">Entregables</h1>
 {% endblock titulo %}
-    
 
 {% block contenido %}
+<table>
+    <tr>
+        <td width="200"><h2>Entregables</h2></td>
+        <td>
+            <a
+            href="{% url 'entregableCrear' %}"
+            class="btn btn-primary btn-sm"
+            ><i class="fa fa-plus fa-lg" title="Crear"> </i>
+            </a>
+        </td>
+    </tr>
+</table>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>nombre</th>
-                <th>fechaEntrega</th>
-                <th>entregado</th>
-            </tr>
-        </thead>
-        <tbody>
-    {% for c in entregables  %}
-            <tr>
-                <td>{{ c.id }}</td>
-                <td>{{ c.nombre }}</td>
-                <td>{{ c.fechaEntrega }}</td>
-                <td>{{ c.entregado }}</td>          
-            </tr>
-    {% endfor %}
-        </tbody>
-    </table>
+<form method="POST">
+    {% csrf_token %}
+    <label for="nombre">Nombre del Entregable:</label>
+    <input type="text" id="nombre" name="nombre">
+    <label for="fechaDeEntrega">Fecha de Entrega:</label>
+    <input type="date" id="fechaDeEntrega" name="fechaDeEntrega">
+    <label for="entregado">Entregado:</label>
+    <input type="checkbox" id="entregado" name="entregado">
+    
+    <label for="estudiante">Seleccionar Estudiante:</label>
+    <select name="estudiante" id="estudiante">
+        {% for estudiante in estudiantes %}
+            <option value="{{ estudiante.id }}">{{ estudiante.nombre }} {{ estudiante.apellido }}</option>
+        {% endfor %}
+    </select>
+    
+    <button type="submit">Guardar</button>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Fecha de Entrega</th>
+            <th>Entregado</th>
+            <th>Estudiante</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entregable in entregables %}
+        <tr>
+            <td>{{ entregable.id }}</td>
+            <td>{{ entregable.nombre }}</td>            
+            <td>{{ entregable.fechaDeEntrega }}</td>
+            <td>{{ entregable.entregado }}</td>
+            <td>{{ entregable.estudiante.nombre }} {{ entregable.estudiante.apellido }}</td>
+            <td>
+              <a
+                href="{% url 'entregableActualizar' entregable.id %}"
+                class="btn btn-primary"
+                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+                ><i class="fa fa-edit fa-sm" title="Editar Registro"></i>
+              </a>
+              <a
+                href="{% url 'entregableBorrar' entregable.id %}"
+                class="btn btn-danger"
+                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+                ><i class="fa fa-trash fa-sm" title="Eliminar Registro"></i>
+              </a>                
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock contenido %}

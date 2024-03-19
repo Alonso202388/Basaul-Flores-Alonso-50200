@@ -7,18 +7,20 @@ urlpatterns = [
     path('', home, name="home"),
     path('cursos/', cursos, name="cursos"),   
     path('curso_form/', cursoForm, name="curso_form"),
-
+    
+    #____________________________________________________ Entregables
     path('entregables/', entregables, name="entregables"),
+    path('entregable_crear/', entregableCrear, name="entregableCrear"),
+    path('entregable_actualizar/<id_entregable>/', entregableActualizar, name="entregableActualizar"),
+    path('entregable_borrar/<id_entregable>/', entregableBorrar, name="entregableBorrar"),
+        
+
     #____________________________________________________ Profesores
     path('profesores/', profesores, name="profesores"),
     path('profesor_crear/', createProfesor, name="profesorCrear"),
     path('profesor_actualizar/<id_profesor>/', updateProfesor, name="profesorActualizar"),
     path('profesor_borrar/<id_profesor>/', deleteProfesor, name="profesorBorrar"),
-    #____________________________________________________ Estudiantes
-    #path('estudiante_list/', EstudianteList.as_view(), name="estudiante_list"),
-    #path('estudiante_create/', EstudianteCreate.as_view(), name="estudiante_create"),
-    #path('estudiante_update/<int:pk>/', EstudianteUpdate.as_view(), name="estudiante_update"),
-    #path('estudiante_delete/<int:pk>/', EstudianteDelete.as_view(), name="estudiante_delete"),
+  
     #____________________________________________________ login, logout, registro
     path('login/', login_request, name="login"),
     path('registro/', register, name="registro"),
@@ -26,7 +28,7 @@ urlpatterns = [
     path('editar_perfil/', editarPerfil, name="editar_perfil"),
     path('agregar_avatar/', agregarAvatar, name="agregar_avatar"),
 
-
+     #____________________________________________________ Buscar
     path('buscar/', buscar, name="buscar"),
     path('buscarCursos/', buscarCursos, name="buscarCursos"),
     path('autor/', autor, name="autor"),
