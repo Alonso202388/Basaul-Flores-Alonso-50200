@@ -13,6 +13,11 @@ class Estudiante(models.Model):
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
     email = models.EmailField()
+ #   
+    class Meta:
+        verbose_name = "Estudiante"
+        verbose_name_plural = "Estudiantes"
+        ordering = ['nombre']    
 
     def __str__(self):
         return f"{self.apellido}, {self.nombre}"

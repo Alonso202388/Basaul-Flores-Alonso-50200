@@ -35,3 +35,18 @@ class UserEditForm(UserCreationForm):
 
 class AvatarForm(forms.Form):
     imagen = forms.ImageField(required=True)
+    
+#en
+class EntregableFormulario(forms.Form):
+    
+    nombre = forms.CharField(required=True)
+    apellido = forms.CharField(required=True)
+    fechaDeEntrega = forms.DateField(required=True) 
+    entregado = forms.BooleanField(required=True)
+    
+class EstudianteForm(forms.Form):
+    nombre = forms.CharField(max_length=50, required=True)
+    apellido = forms.CharField(max_length=50, required=True)
+    email = forms.EmailField(required=True, label="Cuenta de Correo")
+    
+    

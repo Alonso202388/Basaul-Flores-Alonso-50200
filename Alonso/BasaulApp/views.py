@@ -121,20 +121,20 @@ def deleteProfesor(request, id_profesor):
 
 #________________________________________________________ Estudiantes
 
-class EstudianteList(LoginRequiredMixin, ListView):
+#class EstudianteList(LoginRequiredMixin, ListView):
     model = Estudiante
 
-class EstudianteCreate(LoginRequiredMixin, CreateView):
-    model = Estudiante
-    fields = ['nombre', 'apellido', 'email']
-    success_url = reverse_lazy('estudiantes')
-
-class EstudianteUpdate(LoginRequiredMixin, UpdateView):
+#class EstudianteCreate(LoginRequiredMixin, CreateView):
     model = Estudiante
     fields = ['nombre', 'apellido', 'email']
     success_url = reverse_lazy('estudiantes')
 
-class EstudianteDelete(LoginRequiredMixin, DeleteView):
+#class EstudianteUpdate(LoginRequiredMixin, UpdateView):
+    model = Estudiante
+    fields = ['nombre', 'apellido', 'email']
+    success_url = reverse_lazy('estudiantes')
+
+#class EstudianteDelete(LoginRequiredMixin, DeleteView):
     model = Estudiante
     success_url = reverse_lazy('estudiantes')
 
@@ -224,3 +224,73 @@ def agregarAvatar(request):
         form = AvatarForm()
 
     return render(request, "aplicacion/agregarAvatar.html", {"form": form })  
+
+
+#entregable
+
+def entregable_formulario(request):
+    if request.method == "POST":
+        form = EntregableFormulario(request.POST)
+        if form.is_valid():
+            # Crear una instancia de Profesor con los datos del formulario
+            entregable = Entregable(
+                nombre=form.cleaned_data['nombre'],
+                apellido=form.cleaned_data['apellido'],
+                fechaDeEntrega = form.cleaned_data['fechaDeEntrega'],
+                entregado=form.cleaned_data['entregado']   
+            )
+            entregable.save()
+            return render(request, "entregable_formulario.html", {"mensaje": "Entregable creado con éxito"})
+    else:
+        form = EntregableFormulario()
+    
+    return render(request, "entregable_formulario.html", {"form": form})
+
+#________________________________________________________ Profesores
+@login_required
+def estudiantes(request):
+    contexto = {'estudiantes': Estudiante.objects.all()}
+    return render(request, "aplicacion/estudiantes.html", contexto)
+
+@login_required
+def createEstudiante(request):
+    if request.method == "POST":
+        miForm = EstudianteForm(request.POST)
+        if miForm.is_valid():
+            estu_nombre = miForm.cleaned_data.get("nombre")
+            estu_apellido = miForm.cleaned_data.get("apellido")
+            estu_email = miForm.cleaned_data.get("email")
+            estudiante = Estudiante(nombre=estu_nombre, apellido=estu_apellido,
+                                email=estu_email)
+            estudiante.save()
+            return redirect(reverse_lazy('estudiantes'))
+
+    else:    
+        miForm = EstudianteForm()
+
+    return render(request, "aplicacion/estudianteForm.html", {"form": miForm })  
+
+@login_required
+def updateEstudiante(request, id_estudiante):
+    estudiante = Estudiante.objects.get(id=id_estudiante)
+    if request.method == "POST":
+        miForm = EstudianteForm(request.POST)
+        if miForm.is_valid():
+            estudiante.nombre = miForm.cleaned_data.get('nombre')
+            estudiante.apellido = miForm.cleaned_data.get('apellido')
+            estudiante.email = miForm.cleaned_data.get('email')
+            estudiante.save()
+            return redirect(reverse_lazy('estudiantes'))   
+    else:
+        miForm = EstudianteForm(initial={
+            'nombre': estudiante.nombre,
+            'apellido': estudiante.apellido,
+            'email': estudiante.email,
+        })
+    return render(request, "aplicacion/estudianteForm.html", {'form': miForm})
+
+@login_required
+def deleteEstudiante(request, id_estudiante):
+    estudiante = Estudiante.objects.get(id=id_estudiante)
+    estudiante.delete()
+    return redirect(reverse_lazy('estudiantes'))
