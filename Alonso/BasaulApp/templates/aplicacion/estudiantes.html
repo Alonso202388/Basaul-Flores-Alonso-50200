@@ -27,33 +27,42 @@
             <th>Nombre</th>
             <th>Apellido</th>
             <th>Email</th>
-
+            <th>Curso</th>
+            <th>Comisión</th>
         </tr>
     </thead>
     <tbody>
-{% for p in estudiantes  %}
+        {% for estudiante in estudiantes %}
         <tr>
-            <td>{{ p.id }}</td>
-            <td>{{ p.nombre }}</td>
-            <td>{{ p.apellido }}</td>
-            <td>{{ p.email }}</td>
+            <td>{{ estudiante.id }}</td>
+            <td>{{ estudiante.nombre }}</td>
+            <td>{{ estudiante.apellido }}</td>
+            <td>{{ estudiante.email }}</td>
+            <td>
+                {% for curso in estudiante.cursos.all %}
+                    {{ curso.nombre }}
+                    {% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {{ estudiante.comision.curso.nombre }} - {{ estudiante.comision }}
+            </td>
             <td>
               <a
-                href="{% url 'estudianteActualizar' p.id %}"
+                href="{% url 'estudianteActualizar' estudiante.id %}"
                 class="btn btn-primary"
                 style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
                 ><i class="fa fa-edit fa-sm" title="Edit Record"></i>
               </a>
               <a
-                href="{% url 'estudianteBorrar' p.id %}"
+                href="{% url 'estudianteBorrar' estudiante.id %}"
                 class="btn btn-danger"
                 style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
                 ><i class="fa fa-trash fa-sm" title="Delete Record"></i>
               </a>                
             </td>
-
         </tr>
-{% endfor %}
+        {% endfor %}
     </tbody>
 </table>
 {% endblock contenido %}

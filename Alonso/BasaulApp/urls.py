@@ -3,10 +3,17 @@ from .views import *
 
 from django.contrib.auth.views import LogoutView
 
+import ajax_select
+from django.conf.urls.static import static
+from django.contrib import admin
+from django.conf import settings
+from ajax_select import urls as ajax_select_urls
+
 urlpatterns = [
     path('', home, name="home"),
     path('cursos/', cursos, name="cursos"),   
     path('curso_form/', cursoForm, name="curso_form"),
+    path('ajax_select/', include(ajax_select.urls)),
     
     #____________________________________________________ Entregables
     path('entregables/', entregables, name="entregables"),

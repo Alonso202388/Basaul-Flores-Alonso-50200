@@ -74,8 +74,11 @@ def createProfesor(request):
             prof_apellido = miForm.cleaned_data.get("apellido")
             prof_email = miForm.cleaned_data.get("email")
             prof_profesion = miForm.cleaned_data.get("profesion")
+            curso = miForm.cleaned_data.get("curso")
+            comision = miForm.cleaned_data.get("comision")
             profesor = Profesor(nombre=prof_nombre, apellido=prof_apellido,
-                                email=prof_email, profesion=prof_profesion)
+                                email=prof_email, profesion=prof_profesion, curso=curso,
+                                comision=comision)
             profesor.save()
             return redirect(reverse_lazy('profesores'))
 
@@ -83,6 +86,7 @@ def createProfesor(request):
         miForm = ProfesorForm()
 
     return render(request, "aplicacion/profesorForm.html", {"form": miForm })  
+
 
 @login_required
 def updateProfesor(request, id_profesor):
@@ -210,16 +214,6 @@ def entregables(request):
     }
     return render(request, "aplicacion/entregables.html", context)
 
-    #context = {'estudiantes': Estudiante.objects.all()}
-    #return render(request, "aplicacion/entregables.html", context)
-    
-#@login_required
-#def entregables(request):
-    #return render(request, "aplicacion/entregables.html")
-#@login_required
-#def entregables(request):
-    #context = {'estudiantes': Estudiante.objects.all()}
-    #return render(request, "aplicacion/entregables.html", context)
 @login_required
 def entregableCrear(request):
     if request.method == "POST":
@@ -258,34 +252,41 @@ def entregableBorrar(request, id_entregable):
     entregable.delete()
     return redirect(reverse_lazy('entregables'))
 
-
-
 #________________________________________________________ Estudiantes
-#@login_required
-#def estudiantes(request):
-#    return render(request, "aplicacion/estudiantes.html")
+
 @login_required
 def estudiantes(request):
     contexto = {'estudiantes': Estudiante.objects.all()}
     return render(request, "aplicacion/estudiantes.html", contexto)
+
 
 @login_required
 def createEstudiante(request):
     if request.method == "POST":
         miForm = EstudianteForm(request.POST)
         if miForm.is_valid():
+            estudiante = miForm.save(commit=False)  # Crea una instancia de Estudiante sin guardarla en la base de datos aún
             estu_nombre = miForm.cleaned_data.get("nombre")
             estu_apellido = miForm.cleaned_data.get("apellido")
             estu_email = miForm.cleaned_data.get("email")
-            estudiante = Estudiante(nombre=estu_nombre, apellido=estu_apellido,
-                                email=estu_email)
+            cursos = miForm.cleaned_data.get("cursos")
+            comision = miForm.cleaned_data.get("comision")
+            estudiante.nombre = estu_nombre
+            estudiante.apellido = estu_apellido
+            estudiante.email = estu_email
+            estudiante.save()  # Ahora se guarda el estudiante en la base de datos
+
+            # Asignar los cursos al estudiante
+            estudiante.cursos.set(cursos)
+            # Asignar la comisión al estudiante
+            estudiante.comision = comision
             estudiante.save()
             return redirect(reverse_lazy('estudiantes'))
 
     else:    
         miForm = EstudianteForm()
 
-    return render(request, "aplicacion/estudianteForm.html", {"form": miForm })  
+    return render(request, "aplicacion/estudianteForm.html", {"form": miForm })
 
 @login_required
 def updateEstudiante(request, id_estudiante):
@@ -311,3 +312,18 @@ def deleteEstudiante(request, id_estudiante):
     estudiante = Estudiante.objects.get(id=id_estudiante)
     estudiante.delete()
     return redirect(reverse_lazy('estudiantes'))
+
+
+#$
+from ajax_select import register, LookupChannel
+from .models import Curso
+
+@register('comisiones')
+class ComisionLookup(LookupChannel):
+    model = Curso
+
+    def get_query(self, q, request):
+        return self.model.objects.filter(nombre__icontains=q)
+
+    def format_item_display(self, item):
+        return f"{item.nombre} - {item.comision}"
